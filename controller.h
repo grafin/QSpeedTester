@@ -12,11 +12,14 @@ private:
     MainWindow *_window;
     SpeedTester *_tester;
 
+    bool _running;
+
 public:
     explicit Controller(QObject *parent = nullptr);
     ~Controller();
 
-signals:
+private slots:
+    void run_test();
 
 public slots:
 };

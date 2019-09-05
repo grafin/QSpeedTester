@@ -15,6 +15,11 @@ Controller::Controller(QObject *parent) : QObject(parent)
         _window, SLOT(show_results(const qint64, const qint64))
     );
 
+    connect(
+        _tester, SIGNAL(test_error()),
+        _window, SLOT(show_error())
+    );
+
     _window->show();
 }
 
@@ -22,4 +27,9 @@ Controller::~Controller()
 {
     delete _window;
     delete _tester;
+}
+
+void Controller::run_test()
+{
+
 }

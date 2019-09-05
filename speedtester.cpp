@@ -1,6 +1,6 @@
 #include "speedtester.h"
 
-SpeedTester::SpeedTester(QObject *parent, unsigned long timeout) : QObject(parent)
+SpeedTester::SpeedTester(QObject *parent, const int timeout) : QObject(parent)
 {
     _timeout = timeout;
 
@@ -30,12 +30,14 @@ SpeedTester::~SpeedTester()
 
 void SpeedTester::run_test(const QString &url)
 {
-
     QNetworkRequest request(url);
     request.setAttribute(
         QNetworkRequest::CacheLoadControlAttribute,
         QVariant(int(QNetworkRequest::AlwaysNetwork))
     );
+
+    QTimer timer;
+    timer.setSingleShot(true);
 
     _timer->start();
     QNetworkReply *reply = _webManager->get(request);
@@ -44,13 +46,36 @@ void SpeedTester::run_test(const QString &url)
         reply, SIGNAL(downloadProgress(qint64, qint64)),
         this, SLOT(test_running(qint64, qint64))
     );
+
+    QEventLoop loop;
+    connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    timer.start(_timeout);
+    loop.exec();
+
+    if(timer.isActive())
+    {
+        timer.stop();
+    }
+    else
+    {
+        disconnect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        reply->abort();
+    }
 }
 
 void SpeedTester::test_finished(QNetworkReply *reply)
 {
-    emit test_ready(reply->bytesAvailable(), _timer->elapsed());
+    qDebug() << reply->error();
+    if(reply->error() != QNetworkReply::NoError)
+    {
+        emit test_error();
+    }
+    else
+    {
+        emit test_ready(reply->bytesAvailable(), _timer->elapsed());
+    }
     reply->deleteLater();
-    run_test(reply->url().toString());
 }
 
 void SpeedTester::test_running(const qint64 bytesReceived, const qint64 bytesTotal)

@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <QDebug>
+
 namespace Ui {
 class MainWindow;
 }
@@ -19,10 +21,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void run_test();
+    void run_test(const bool enabled);
 
 public slots:
     void show_results(const qint64 size, const qint64 time);
+    void show_error();
 
 signals:
     void run_test(const QString &url);

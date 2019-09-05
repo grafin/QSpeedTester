@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     connect(
-        ui->startStopButton, SIGNAL(clicked()),
-        this, SLOT(run_test())
+        ui->startStopButton, SIGNAL(clicked(bool)),
+        this, SLOT(run_test(bool))
     );
 }
 
@@ -25,7 +25,16 @@ void MainWindow::show_results(const qint64 size, const qint64 time)
     ui->speedLabel->setNum(static_cast<double>(size) / 1024 / 1024 / static_cast<double>(time) * 1000);
 }
 
-void MainWindow::run_test()
+void MainWindow::show_error()
 {
+    ui->sizeLabel->setText("Error");
+    ui->timeLabel->setText("Error");
+    ui->speedLabel->setText("Error");
+}
+
+
+void MainWindow::run_test(const bool enabled)
+{
+    qDebug() << enabled;
     emit run_test(ui->urlEdit->text());
 }

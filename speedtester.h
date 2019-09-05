@@ -6,6 +6,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QTimer>
+#include <QEventLoop>
 #include <QElapsedTimer>
 
 #include <QDebug>
@@ -17,10 +19,10 @@ private:
     QThread *_thread;
     QNetworkAccessManager *_webManager;
     QElapsedTimer *_timer;
-    unsigned long _timeout;
+    int _timeout;
 
 public:
-    explicit SpeedTester(QObject *parent = nullptr, unsigned long timeout = 1);
+    explicit SpeedTester(QObject *parent = nullptr, const int timeout = 1000);
     ~SpeedTester();
 
 private slots:
@@ -32,6 +34,7 @@ public slots:
 
 signals:
     void test_ready(const qint64 size, const qint64 time);
+    void test_error();
 };
 
 #endif // SPEEDTESTER_H
