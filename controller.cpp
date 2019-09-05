@@ -2,16 +2,23 @@
 
 Controller::Controller(QObject *parent) : QObject(parent)
 {
+    _running = false;
+
+    _thread = new QThread(this);
     _window = new MainWindow();
-    _tester = new SpeedTester();
+    _tester = new SpeedTester(this);
+
+    this->moveToThread(_thread);
+    _tester->moveToThread(_thread);
+    _tester->init();
 
     connect(
-        _window, SIGNAL(run_test(const QString &)),
-        _tester, SLOT(run_test(const QString &))
+        _window, SIGNAL(run_test()),
+        this, SLOT(run_test())
     );
 
     connect(
-        _tester, SIGNAL(test_ready(const qint64, const qint64)),
+        _tester, SIGNAL(results_ready(const qint64, const qint64)),
         _window, SLOT(show_results(const qint64, const qint64))
     );
 
@@ -20,16 +27,23 @@ Controller::Controller(QObject *parent) : QObject(parent)
         _window, SLOT(show_error())
     );
 
+    _thread->start();
+
     _window->show();
 }
 
 Controller::~Controller()
 {
+    _thread->quit();
+    _thread->wait();
     delete _window;
     delete _tester;
+    delete _thread;
 }
 
 void Controller::run_test()
 {
-
+    while (_window->testRunning()) {
+        _tester->run_test(_window->getUrl());
+    }
 }

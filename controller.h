@@ -3,7 +3,9 @@
 
 #include <mainwindow.h>
 #include <speedtester.h>
+
 #include <QObject>
+#include <QThread>
 
 class Controller : public QObject
 {
@@ -11,6 +13,7 @@ class Controller : public QObject
 private:
     MainWindow *_window;
     SpeedTester *_tester;
+    QThread *_thread;
 
     bool _running;
 

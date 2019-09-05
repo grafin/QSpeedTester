@@ -18,23 +18,14 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="sizeLabel">
-        <property name="text">
-         <string>TextLabel</string>
+       <widget class="QQuickWidget" name="gaugeWidget">
+        <property name="resizeMode">
+         <enum>QQuickWidget::SizeRootObjectToView</enum>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="timeLabel">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="speedLabel">
-        <property name="text">
-         <string>TextLabel</string>
+        <property name="source">
+         <url>
+          <string/>
+         </url>
         </property>
        </widget>
       </item>
@@ -64,6 +55,13 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QQuickWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">QtQuickWidgets/QQuickWidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

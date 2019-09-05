@@ -4,31 +4,28 @@ SpeedTester::SpeedTester(QObject *parent, const int timeout) : QObject(parent)
 {
     _timeout = timeout;
 
-    _webManager = new QNetworkAccessManager();
+    _webManager = new QNetworkAccessManager(this);
+
     _timer = new QElapsedTimer();
 
     connect(
         _webManager, SIGNAL(finished(QNetworkReply*)),
-        this, SLOT(test_finished(QNetworkReply*))
+        this, SLOT(reply_ready(QNetworkReply*))
     );
+}
 
-    _thread = new QThread();
-
-    this->moveToThread(_thread);
-    _webManager->moveToThread(_thread);
-    _thread->start();
+void SpeedTester::init()
+{
+    _webManager->moveToThread(this->thread());
 }
 
 SpeedTester::~SpeedTester()
 {
     delete _timer;
     delete _webManager;
-    _thread->quit();
-    _thread->wait();
-    delete _thread;
 }
 
-void SpeedTester::run_test(const QString &url)
+void SpeedTester::run_test(const QUrl &url)
 {
     QNetworkRequest request(url);
     request.setAttribute(
@@ -64,21 +61,20 @@ void SpeedTester::run_test(const QString &url)
     }
 }
 
-void SpeedTester::test_finished(QNetworkReply *reply)
+void SpeedTester::reply_ready(QNetworkReply *reply)
 {
-    qDebug() << reply->error();
     if(reply->error() != QNetworkReply::NoError)
     {
         emit test_error();
     }
     else
     {
-        emit test_ready(reply->bytesAvailable(), _timer->elapsed());
+        emit test_finished(reply->url().toString());
     }
     reply->deleteLater();
 }
 
 void SpeedTester::test_running(const qint64 bytesReceived, const qint64 bytesTotal)
 {
-    emit test_ready(bytesReceived, _timer->elapsed());
+    emit results_ready(bytesReceived, _timer->elapsed());
 }

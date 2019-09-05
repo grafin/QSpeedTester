@@ -7,9 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->gaugeWidget->engine()->rootContext()->setContextProperty("MainWindow", this);
+    ui->gaugeWidget->setSource(QUrl("qrc:/gauge.qml"));
+
     connect(
-        ui->startStopButton, SIGNAL(clicked(bool)),
-        this, SLOT(run_test(bool))
+        ui->startStopButton, SIGNAL(clicked()),
+        this, SLOT(start_stop())
     );
 }
 
@@ -18,23 +21,35 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+const QUrl MainWindow::getUrl() const
+{
+    return QUrl(ui->urlEdit->text());
+}
+
+bool MainWindow::testRunning() const
+{
+    return ui->startStopButton->isChecked();
+}
+
 void MainWindow::show_results(const qint64 size, const qint64 time)
 {
-    ui->sizeLabel->setNum(static_cast<int>(size));
-    ui->timeLabel->setNum(static_cast<int>(time));
-    ui->speedLabel->setNum(static_cast<double>(size) / 1024 / 1024 / static_cast<double>(time) * 1000);
+    emit update_gauge(static_cast<double>(size) * 2 / static_cast<double>(time));
+//    ui->speedGauge->rootContext()->setContextProperty("50", "20");
+//    ui->speedGauge->rootObject()->children()[2]->setProperty(
+//                "value", );
+//    ui->sizeLabel->setNum(static_cast<int>(size));
+//    ui->timeLabel->setNum(static_cast<int>(time));
+//    ui->speedLabel->setNum(;
 }
 
 void MainWindow::show_error()
 {
-    ui->sizeLabel->setText("Error");
-    ui->timeLabel->setText("Error");
-    ui->speedLabel->setText("Error");
+//    ui->sizeLabel->setText("Error");
+//    ui->timeLabel->setText("Error");
+//    ui->speedLabel->setText("Error");
 }
 
-
-void MainWindow::run_test(const bool enabled)
+void MainWindow::start_stop()
 {
-    qDebug() << enabled;
-    emit run_test(ui->urlEdit->text());
+    emit run_test();
 }
