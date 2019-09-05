@@ -1,4 +1,4 @@
-#include "speedtester.h"
+#include <speedtester.h>
 
 SpeedTester::SpeedTester(QObject *parent, const int timeout) : QObject(parent)
 {

@@ -9,8 +9,6 @@
 #include <QEventLoop>
 #include <QElapsedTimer>
 
-#include <QDebug>
-
 class SpeedTester : public QObject
 {
     Q_OBJECT

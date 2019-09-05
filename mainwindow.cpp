@@ -1,23 +1,43 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include <mainwindow.h>
+#include <ui_mainwindow.h>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(const QString &url, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    _enterShortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
+    _enterShortcut->setContext(Qt::ApplicationShortcut);
+    _spaceShortcut = new QShortcut(QKeySequence(Qt::Key_Space), this);
+    _spaceShortcut->setContext(Qt::ApplicationShortcut);
+
+    ui->gaugeWidget->setAttribute(Qt::WA_AlwaysStackOnTop, true);
     ui->gaugeWidget->engine()->rootContext()->setContextProperty("MainWindow", this);
     ui->gaugeWidget->setSource(QUrl("qrc:/gauge.qml"));
 
+    ui->urlEdit->setText(url);
+
     connect(
-        ui->startStopButton, SIGNAL(clicked()),
-        this, SLOT(start_stop())
+        ui->startStopButton, SIGNAL(toggled(bool)),
+        this, SLOT(start_stop(const bool))
+    );
+
+    connect(
+        _enterShortcut, SIGNAL(activated()),
+        ui->startStopButton, SLOT(toggle())
+    );
+
+    connect(
+        _spaceShortcut, SIGNAL(activated()),
+        ui->startStopButton, SLOT(toggle())
     );
 }
 
 MainWindow::~MainWindow()
 {
+    delete _enterShortcut;
+    delete _spaceShortcut;
     delete ui;
 }
 
@@ -33,23 +53,24 @@ bool MainWindow::testRunning() const
 
 void MainWindow::show_results(const qint64 size, const qint64 time)
 {
-    emit update_gauge(static_cast<double>(size) * 2 / static_cast<double>(time));
-//    ui->speedGauge->rootContext()->setContextProperty("50", "20");
-//    ui->speedGauge->rootObject()->children()[2]->setProperty(
-//                "value", );
-//    ui->sizeLabel->setNum(static_cast<int>(size));
-//    ui->timeLabel->setNum(static_cast<int>(time));
-//    ui->speedLabel->setNum(;
+    if(ui->startStopButton->isChecked() && time > 0)
+        emit update_gauge(static_cast<double>(size) / static_cast<double>(time));
+    else
+        emit update_gauge(0);
 }
 
 void MainWindow::show_error()
 {
-//    ui->sizeLabel->setText("Error");
-//    ui->timeLabel->setText("Error");
-//    ui->speedLabel->setText("Error");
 }
 
-void MainWindow::start_stop()
+void MainWindow::start_stop(const bool running)
 {
-    emit run_test();
+    if(running)
+    {
+        emit run_test();
+    }
+    else
+    {
+        emit update_gauge(0);
+    }
 }

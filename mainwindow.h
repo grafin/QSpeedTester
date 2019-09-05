@@ -5,8 +5,8 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QUrl>
-
-#include <QDebug>
+#include <QString>
+#include <QShortcut>
 
 namespace Ui {
 class MainWindow;
@@ -18,16 +18,18 @@ class MainWindow : public QMainWindow
 
 private:
     Ui::MainWindow *ui;
+    QShortcut *_enterShortcut;
+    QShortcut *_spaceShortcut;
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(const QString &url, QWidget *parent = nullptr);
     ~MainWindow();
 
     const QUrl getUrl() const;
     bool testRunning() const;
 
 private slots:
-    void start_stop();
+    void start_stop(const bool running);
 
 public slots:
     void show_results(const qint64 size, const qint64 time);

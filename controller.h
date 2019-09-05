@@ -5,6 +5,7 @@
 #include <speedtester.h>
 
 #include <QObject>
+#include <QString>
 #include <QThread>
 
 class Controller : public QObject
@@ -18,7 +19,7 @@ private:
     bool _running;
 
 public:
-    explicit Controller(QObject *parent = nullptr);
+    explicit Controller(const QString &url, QWidget *parent = nullptr);
     ~Controller();
 
 private slots:

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Bandwidth Tester</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -19,6 +19,12 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QQuickWidget" name="gaugeWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="resizeMode">
          <enum>QQuickWidget::SizeRootObjectToView</enum>
         </property>
@@ -30,24 +36,42 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="urlEdit">
-        <property name="text">
-         <string>http://example.com</string>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="startStopButton">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
+        <item>
+         <widget class="QLineEdit" name="urlEdit">
+          <property name="text">
+           <string>http://example.com</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="startStopButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../tmp/build-QSpeedTester-Desktop_Qt_5_13_0_GCC_64bit-Release/qmake_qmake_immediate.qrc">
+            <normaloff>:/icons/media-playback-start.png</normaloff>
+            <normalon>:/icons/media-playback-pause.png</normalon>:/icons/media-playback-start.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -62,6 +86,8 @@
    <header location="global">QtQuickWidgets/QQuickWidget</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../tmp/build-QSpeedTester-Desktop_Qt_5_13_0_GCC_64bit-Release/qmake_qmake_immediate.qrc"/>
+ </resources>
  <connections/>
 </ui>

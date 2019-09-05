@@ -1,11 +1,11 @@
-#include "controller.h"
+#include <controller.h>
 
-Controller::Controller(QObject *parent) : QObject(parent)
+Controller::Controller(const QString &url, QWidget *parent) : QObject(parent)
 {
     _running = false;
 
     _thread = new QThread(this);
-    _window = new MainWindow();
+    _window = new MainWindow(url);
     _tester = new SpeedTester(this);
 
     this->moveToThread(_thread);
@@ -34,10 +34,10 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 Controller::~Controller()
 {
-    _thread->quit();
-    _thread->wait();
     delete _window;
     delete _tester;
+    _thread->quit();
+    _thread->wait();
     delete _thread;
 }
 
